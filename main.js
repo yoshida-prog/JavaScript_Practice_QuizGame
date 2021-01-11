@@ -39,8 +39,7 @@ const answer_button_create = (len, quizAnswerData, i, quizData) => {
   }
 };
 
-startBtn.addEventListener('click', () => {
-
+START_BUTTON.addEventListener('click', () => {
   const awaitForClick = (quizData) => {
     return new Promise((resolve, reject) => {
       if(i < 9){
@@ -61,50 +60,42 @@ startBtn.addEventListener('click', () => {
       return response.json();
     })
     .then((data) => {
-      console.log(data.results);
-      const QUIZ_DATA = data.results;
+      const quiz_data = data.results;
       let answersData = [];
-      let data_length = QUIZ_DATA[0].incorrect_answers.length + 1;
+      let data_length = quiz_data[0].incorrect_answers.length + 1;
       for(let num = 0; num < data_length-1; num++){
-        answersData.push(QUIZ_DATA[0].incorrect_answers[num]);
+        answersData.push(quiz_data[0].incorrect_answers[num]);
       }
-      answersData.push(QUIZ_DATA[0].correct_answer);
+      answersData.push(quiz_data[0].correct_answer);
       let ANSWERS_LENGTH = answersData.length;
       for (j = answersData.length; 1 < j; j--) {
         k = Math.floor(Math.random() * j);
         [answersData[k], answersData[j - 1]] = [answersData[j - 1], answersData[k]];
       }
       TOP_MESSAGE.textContent = '問題' + quizNum;
-      QUIZ.textContent = QUIZ_DATA[0].question;
-      answer_button_create(ANSWERS_LENGTH, answersData, i, QUIZ_DATA[0]);
+      QUIZ.textContent = quiz_data[0].question;
+      answer_button_create(ANSWERS_LENGTH, answersData, i, quiz_data[0]);
       const ANSWER_BUTTON = document.getElementsByClassName('answerBtn');
-      console.log(QUIZ_DATA[0]);
-      console.log(answersData);
-      console.log(ANSWER_BUTTON);
 
       for(let a = 0; a < ANSWER_BUTTON.length; a++){
         ANSWER_BUTTON[a].addEventListener('click', (event) => {
-          event.target.textContent === QUIZ_DATA[i].correct_answer ? correct_count++ : false;
-          console.log(correct_count);
-          awaitForClick(QUIZ_DATA).then((value) => {
+          event.target.textContent === quiz_data[i].correct_answer ? correct_count++ : false;
+          awaitForClick(quiz_data).then((value) => {
             quizNum++;
             TOP_MESSAGE.textContent = '問題' + quizNum;
-            data_length = QUIZ_DATA[i].incorrect_answers.length + 1;
+            data_length = quiz_data[i].incorrect_answers.length + 1;
             answersData = [];
             for(let num = 0; num < data_length-1; num++){
-              answersData.push(QUIZ_DATA[i].incorrect_answers[num]);
+              answersData.push(quiz_data[i].incorrect_answers[num]);
             }
-            answersData.push(QUIZ_DATA[i].correct_answer);
+            answersData.push(quiz_data[i].correct_answer);
             let ANSWERS_LENGTH = answersData.length;
             for (j = answersData.length; 1 < j; j--) {
               k = Math.floor(Math.random() * j);
               [answersData[k], answersData[j - 1]] = [answersData[j - 1], answersData[k]];
             }
-            console.log(QUIZ_DATA[i]);
-            console.log(answersData);
-            answer_button_create(ANSWERS_LENGTH, answersData, i, QUIZ_DATA[i]);
+            answer_button_create(ANSWERS_LENGTH, answersData, i, quiz_data[i]);
           }).catch(end => {
-            console.log(end);
             TOP_MESSAGE.textContent = 'あなたの正解数は' + correct_count + 'です！！';
             document.getElementById('genre').remove();
             document.getElementById('difficulty').remove();
